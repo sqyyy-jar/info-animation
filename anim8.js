@@ -1,9 +1,9 @@
 class Scene {
     /**
-     * @param {Frame[]} frames 
+     * @param {Frame[]} frames
      */
     constructor(frames) {
-        /** @type {FrameObject[]} */
+        /** @type {SceneObject[]} */
         this.objects = [];
         this.frames = frames;
         this.index = 0;
@@ -30,11 +30,13 @@ class Scene {
                 }
             }
         }
-        scene.index += 1;
+        this.index += 1;
     }
 
     /**
      * @param {CanvasRenderingContext2D} context
+     * @param {number} width
+     * @param {number} height
      */
     draw(context, width, height) {
         context.clearRect(0, 0, width, height);
@@ -46,7 +48,7 @@ class Scene {
 
 class Frame {
     /**
-     * @param {FrameOp[]} ops 
+     * @param {FrameOp[]} ops
      */
     constructor(ops) {
         /** @type {FrameOp[]} */
@@ -54,65 +56,90 @@ class Frame {
     }
 }
 
-class FrameOp { }
-
-class FrameObject { }
-
-const ops = {
-    Add(name, object) {
-        return {
-            type: "add",
-            name: name,
-            object: object,
-        };
-    },
-
-    Remove(name) {
-        return {
-            type: "remove",
-            name: name,
-        };
-    },
-};
-
-const object = {
+class FrameOp {
     /**
-     * ```
-     * [options]: {
+     * @param {string} type
+     */
+    constructor(type) {
+        this.type = type;
+    }
+}
+
+class Add extends FrameOp {
+    /**
+     * @param {string} name
+     * @param {SceneObject} object
+     */
+    constructor(name, object) {
+        super("add");
+        this.name = name;
+        this.object = object;
+    }
+}
+
+class Remove extends FrameOp {
+    /**
+     * @param {string} name
+     */
+    constructor(name) {
+        super("remove");
+        this.name = name;
+    }
+}
+
+class SceneObject {
+    /**
+     * @param {string} type
+     */
+    constructor(type) {
+        this.type = type;
+    }
+
+    /**
+     * @param {CanvasRenderingContext2D} canvas
+     * @param {number} width
+     * @param {number} height
+     * @returns {void}
+     */
+    draw(canvas, width, height);
+}
+
+class Rect extends SceneObject {
+    /**
+     * @param {{
      *   width: number,
      *   height: number,
      *   x: number,
      *   y: number,
      *   color: string,
-     * }
-     * ```
-     * 
-     * @returns a new rectangle object.
+     * }} options
      */
-    Rect(options) {
-        return {
-            type: "rectangle",
-            ...options,
-        };
-    },
+    constructor(options) {
+        super("rectangle");
+        this.options = options;
+    }
 
     /**
-     * ´´´
-     * [options]: {
+     * @param {CanvasRenderingContext2D} canvas
+     * @param {number} width
+     * @param {number} height
+     * @returns {void}
+     */
+    draw(canvas, width, height) { }
+}
+
+class Text extends SceneObject {
+    /**
+     * @param {{
      *   x: number,
      *   y: number,
      *   text: string,
      *   color: string,
      *   font: string,
-     * }
-     * ´´´
-     * 
-     * @returns a new text object.
+     * }} options
      */
-    Text(options) {
-        return {
-            type: "text",
-            ...options,
-        };
-    },
-};
+    constructor(options) {
+        super("text");
+        this.options = options;
+    }
+}
