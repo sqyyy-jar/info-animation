@@ -14,7 +14,7 @@ class Scene {
         this.xRatio = pw / vw;
         this.yRatio = ph / vh;
         this.frames = frames;
-        this.index = 0;
+        this.index = -1;
         /** @type {[{name: string, object: SceneObject}]} */
         this.objects = [];
     }
@@ -23,7 +23,17 @@ class Scene {
         return this.frames[this.index];
     }
 
+    findObject(name) {
+        for (const object of this.objects) {
+            if (object.name === name) {
+                return object.object;
+            }
+        }
+        return null;
+    }
+
     next() {
+        this.index += 1;
         const frame = this.currentFrame();
         if (!frame) {
             return;
@@ -31,7 +41,6 @@ class Scene {
         for (const op of frame.ops) {
             op.apply(this)
         }
-        this.index += 1;
     }
 
     /**
@@ -54,6 +63,20 @@ class SceneObject {
     visible = true;
 
     /**
+     * @param {number} x
+     * @param {number} y
+     */
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    move(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    /**
      * @param {Scene} scene
      * @param {CanvasRenderingContext2D} context
      */
@@ -63,11 +86,23 @@ class SceneObject {
 
 class List extends SceneObject {
     /**
+     * @param {number} x
+     * @param {number} y
      * @param {SceneObject[]} objects
      */
-    constructor(objects) {
-        super();
+    constructor(x, y, objects) {
+        super(x, y);
         this.objects = objects;
+    }
+
+    move(x, y) {
+        const xOffset = x - this.x;
+        const yOffset = y - this.y;
+        this.x = x;
+        this.y = y;
+        for (const object of this.objects) {
+            object.move(object.x + xOffset, object.y + yOffset);
+        }
     }
 
     draw(scene, context) {
@@ -79,54 +114,54 @@ class List extends SceneObject {
 
 class Rect extends SceneObject {
     /**
-     * @param {{
-     *   width: number,
-     *   height: number,
-     *   x: number,
-     *   y: number,
-     *   color: string,
-     * }} options
+     * @param {number} x
+     * @param {number} y
+     * @param {number} width
+     * @param {number} height
+     * @param {string} color
      */
-    constructor(options) {
-        super();
-        this.options = options;
+    constructor(x, y, width, height, color) {
+        super(x, y);
+        this.width = width;
+        this.height = height;
+        this.color = color;
     }
 
     draw(scene, context) {
-        context.fillStyle = this.options.color;
+        context.fillStyle = this.color;
         context.fillRect(
-            Math.floor((this.options.x - this.options.width / 2) * scene.xRatio),
-            Math.floor((this.options.y - this.options.height / 2) * scene.yRatio),
-            Math.floor(this.options.width * scene.xRatio),
-            Math.floor(this.options.height * scene.yRatio)
+            Math.floor((this.x - this.width / 2) * scene.xRatio),
+            Math.floor((this.y - this.height / 2) * scene.yRatio),
+            Math.floor(this.width * scene.xRatio),
+            Math.floor(this.height * scene.yRatio)
         );
     }
 }
 
 class Text extends SceneObject {
     /**
-     * @param {{
-     *   x: number,
-     *   y: number,
-     *   text: string,
-     *   color: string,
-     *   font: string,
-     * }} options
+     * @param {number} x
+     * @param {number} y
+     * @param {string} text
+     * @param {string} color
+     * @param {string} font
      */
-    constructor(options) {
-        super();
-        this.options = options;
+    constructor(x, y, text, color, font) {
+        super(x, y);
+        this.text = text;
+        this.color = color;
+        this.font = font;
     }
 
     draw(scene, context) {
-        context.font = this.options.font;
+        context.font = this.font;
         context.textBaseline = "middle";
-        context.fillStyle = this.options.color;
-        const textSize = context.measureText(this.options.text);
+        context.fillStyle = this.color;
+        const textSize = context.measureText(this.text);
         context.fillText(
-            this.options.text,
-            Math.floor(this.options.x * scene.xRatio - textSize.width / 2),
-            Math.floor(this.options.y * scene.yRatio)
+            this.text,
+            Math.floor(this.x * scene.xRatio - textSize.width / 2),
+            Math.floor(this.y * scene.yRatio)
         );
     }
 }

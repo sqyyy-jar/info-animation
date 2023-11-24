@@ -1,4 +1,4 @@
-export {Frame, FrameOp, Add, Remove, SetVisibility};
+export {Frame, FrameOp, Add, Remove, SetVisibility, MoveAbs, MoveRel};
 
 class Frame {
     /**
@@ -65,10 +65,48 @@ class SetVisibility extends FrameOp {
     }
 
     apply(scene) {
-        for (const object of scene.objects) {
-            if (object.name === this.name) {
-                object.object.visible = this.visible;
-            }
+        const object = scene.findObject(this.name);
+        if (object) {
+            object.visible = this.visible;
         }
+    }
+}
+
+class MoveAbs extends FrameOp {
+    /**
+     * @param {string} name
+     * @param {number} x
+     * @param {number} y
+     */
+    constructor(name, x, y) {
+        super();
+        this.name = name;
+        this.x = x;
+        this.y = y;
+    }
+
+    apply(scene) {
+        const object = scene.findObject(this.name);
+        if (!object) {
+            return;
+        }
+        object.move(this.x, this.y);
+    }
+}
+
+class MoveRel extends FrameOp {
+    constructor(name, xOffset, yOffset) {
+        super();
+        this.name = name;
+        this.xOffset = xOffset;
+        this.yOffset = yOffset;
+    }
+
+    apply(scene) {
+        const object = scene.findObject(this.name);
+        if (!object) {
+            return;
+        }
+        object.move(object.x + this.xOffset, object.y + this.yOffset);
     }
 }

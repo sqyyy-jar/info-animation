@@ -1,10 +1,9 @@
 import {Scene, SceneObject, List, Rect, Text} from "./scene.js";
-import {Frame, FrameOp, Add, Remove, SetVisibility} from "./frame.js";
+import {Frame, FrameOp, Add, Remove, SetVisibility, MoveAbs, MoveRel} from "./frame.js";
 
-// export {Scene, Frame, FrameOp, Add, Remove, SetVisibility, SceneObject, Array, Rect, Text};
 export {Scene, SceneObject, List, Rect, Text};
-export {Frame, FrameOp, Add, Remove, SetVisibility};
-export {add, remove, show, hide, list, rect, text};
+export {Frame, FrameOp, Add, Remove, SetVisibility, MoveAbs, MoveRel};
+export {add, remove, show, hide, moveAbs, moveRel, list, rect, text};
 
 /**
  * @param {string} name
@@ -40,11 +39,31 @@ function hide(name) {
 }
 
 /**
+ * @param {string} name
+ * @param {number} x
+ * @param {number} y
+ * @returns {MoveAbs}
+ */
+function moveAbs(name, x, y) {
+    return new MoveAbs(name, x, y);
+}
+
+/**
+ * @param {string} name
+ * @param {number} xOffset
+ * @param {number} yOffset
+ * @returns {MoveRel}
+ */
+function moveRel(name, xOffset, yOffset) {
+    return new MoveRel(name, xOffset, yOffset);
+}
+
+/**
  * @param {SceneObject} objects
  * @returns {List}
  */
 function list(...objects) {
-    return new List(objects);
+    return new List(0, 0, objects);
 }
 
 /**
@@ -56,7 +75,7 @@ function list(...objects) {
  * @returns {Rect}
  */
 function rect(x, y, width, height, color) {
-    return new Rect({x: x, y: y, width: width, height: height, color: color});
+    return new Rect(x, y, width, height, color);
 }
 
 /**
@@ -68,5 +87,5 @@ function rect(x, y, width, height, color) {
  * @returns {Text}
  */
 function text(x, y, text, color, font) {
-    return new Text({x: x, y: y, text: text, color: color, font: font});
+    return new Text(x, y, text, color, font);
 }

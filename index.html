@@ -24,10 +24,10 @@
 <canvas width="1280" height="720" class="full" id="canvas"></canvas>
 
 <script type="module" defer>
-    import {Scene, Frame, add, rect, text} from "./scripts/anim8.js";
+    import {Scene, Frame, add, hide, show, moveRel, list, rect, text} from "./scripts/anim8.js";
 
     const canvas = document.getElementById("canvas");
-    const context = canvas.getContext("2d", {antialias: false});
+    const context = canvas.getContext("2d", {antialias: false, alpha: false});
     const width = +canvas.width;
     const height = +canvas.height;
 
@@ -40,25 +40,55 @@
                 90,
                 "aqua",
             )),
-            add("box1", rect(
-                80,
-                45,
-                40,
-                40,
-                "lime",
+            add("boxes", list(
+                rect(
+                    55,
+                    45,
+                    20,
+                    20,
+                    "lime",
+                ),
+                rect(
+                    80,
+                    45,
+                    20,
+                    20,
+                    "lime",
+                ),
+                rect(
+                    105,
+                    45,
+                    20,
+                    20,
+                    "lime",
+                ),
+                text(
+                    80,
+                    45,
+                    "Hello",
+                    "black",
+                    "16pt JetBrains Mono",
+                ),
             )),
-            add("text1", text(
-                80,
-                45,
-                "Hello",
-                "black",
-                "16pt JetBrains Mono",
-            )),
+        ]),
+        new Frame([
+            moveRel("boxes", 0, 20),
+        ]),
+        new Frame([
+            moveRel("boxes", 0, -20),
         ]),
     ]);
 
     scene.next();
     scene.draw(context, width, height);
+
+    window.addEventListener("keydown", ev => {
+        if (ev.code !== "Space" && ev.code !== "ArrowRight") {
+            return;
+        }
+        scene.next();
+        scene.draw(context, width, height);
+    });
 </script>
 
 </body>
