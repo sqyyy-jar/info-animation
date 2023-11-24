@@ -21,10 +21,10 @@
 
 <body>
 
-<canvas width="1280" height="720" class="full" id="canvas"></canvas>
+<canvas class="full" height="720" id="canvas" width="1280"></canvas>
 
-<script type="module" defer>
-    import {Scene, Frame, add, hide, show, moveRel, list, rect, text} from "./scripts/anim8.js";
+<script defer type="module">
+    import {Scene, Frame, add, moveRel, list, rect, text} from "./scripts/anim8.js";
 
     const canvas = document.getElementById("canvas");
     const context = canvas.getContext("2d", {antialias: false, alpha: false});
@@ -33,42 +33,12 @@
 
     const scene = new Scene(160, 90, width, height, [
         new Frame([
-            add("background", rect(
-                80,
-                45,
-                160,
-                90,
-                "aqua",
-            )),
+            add("background", rect(80, 45, 160, 90, "aqua")),
             add("boxes", list(
-                rect(
-                    55,
-                    45,
-                    20,
-                    20,
-                    "lime",
-                ),
-                rect(
-                    80,
-                    45,
-                    20,
-                    20,
-                    "lime",
-                ),
-                rect(
-                    105,
-                    45,
-                    20,
-                    20,
-                    "lime",
-                ),
-                text(
-                    80,
-                    45,
-                    "Hello",
-                    "black",
-                    "16pt JetBrains Mono",
-                ),
+                rect(55, 45, 20, 20, "lime"),
+                rect(80, 45, 20, 20, "lime"),
+                rect(105, 45, 20, 20, "lime"),
+                text(80, 45, "Hello", "black", "16pt JetBrains Mono"),
             )),
         ]),
         new Frame([
