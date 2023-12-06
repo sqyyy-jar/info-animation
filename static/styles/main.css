@@ -9,7 +9,7 @@ body {
     justify-content: center;
 }
 
-svg.frame {
+.anim-frame {
     max-height: 100vh;
     background-color: #202520;
 }
@@ -20,21 +20,26 @@ text {
     text-anchor: middle;
 }
 
-text.title {
+.anim-title {
     font-size: 1rem;
 }
 
-text.box-text {
+.anim-box-text {
     font-size: 0.45rem;
     dominant-baseline: middle;
 }
 
-rect.box {
+.anim-box {
     fill: #265d6d;
     stroke: #48bbdd;
     stroke-width: 1pt;
 }
 
-rect.box-marked {
+.anim-box-marked {
     fill: #843829;
+}
+
+.anim-box-done {
+    fill: darkolivegreen;
+    stroke: lime;
 }
