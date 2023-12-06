@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta property="og:title" content="Quicksort" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://sqyyy-jar.github.io/info-animation" />
+    <meta property="og:description" content="Quicksort Animation" />
+    <title>Quicksort</title>
+    <link href="styles/main.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div class="center-content">
+    <h1 class="title">Quicksort</h1>
+</div>
+<div class="center-content">
+    <svg class="dark-area anim-frame" id="frame" viewBox="0 0 400 55"></svg>
+</div>
+<div class="center-content">
+    <p class="dark-area info-text" id="info-text">
+    </p>
+</div>
+<div class="center-content">
+    <label>
+        <input class="ui-element input" id="number-input" placeholder="Zahlen eingeben" type="text">
+    </label>
+    <button class="ui-element" onclick="window.runtimeRestart()">Neustarten</button>
+    <button class="ui-element" onclick="window.runtimeStep()">Nächster Schritt</button>
+</div>
+<script defer src="scripts/main.js" type="module"></script>
+</body>
+</html>

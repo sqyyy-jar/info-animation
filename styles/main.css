@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@300&family=Roboto:wght@300;400&display=swap');
+
+* {
+    color: white;
+}
+
+body {
+    background-color: #202820;
+    margin: 0;
+    padding: 0;
+    /*overflow: scroll;*/
+    font-family: Roboto, sans-serif;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.center-content {
+    display: flex;
+    justify-content: center;
+}
+
+.title {
+    font-size: 2.5rem;
+}
+
+.info-text {
+    min-height: min-content;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.ui-element {
+    background-color: #202028;
+    border: none;
+    padding: 16px 24px;
+    margin: 10px 5px;
+    font-size: 1.5rem;
+}
+
+.ui-element:hover {
+    background-color: #20202f;
+}
+
+.ui-element:active {
+    background-color: #202038;
+}
+
+.dark-area {
+    background-color: #202520;
+    width: 80vw;
+    padding: 64px;
+    margin: 8px;
+    text-anchor: middle;
+}
+
+text {
+    fill: white;
+}
+
+.anim-text {
+    font-size: 0.55rem;
+    dominant-baseline: middle;
+}
+
+.anim-box-text {
+    font-size: 0.45rem;
+    dominant-baseline: middle;
+}
+
+.anim-box {
+    fill: #265d6d;
+    stroke: #48bbdd;
+    stroke-width: 1pt;
+}
+
+.anim-box-marked {
+    fill: #843829;
+}
+
+.anim-box-done {
+    fill: darkolivegreen;
+    stroke: lime;
+}

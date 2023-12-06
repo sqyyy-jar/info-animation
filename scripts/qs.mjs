@@ -1,14 +1,14 @@
-import {AnimList} from "./anim.mjs";
+import {AnimScene} from "./anim.mjs";
 
 export {Runtime, StackFrame, QuicksortFrame, PartitionFrame};
 
 class Runtime {
     /**
-     * @param {AnimList} list
+     * @param {AnimScene} scene
      */
-    constructor(list) {
-        this.list = list;
-        this.arr = this.list.contents;
+    constructor(scene) {
+        this.scene = scene;
+        this.arr = this.scene.arr;
         /** @type {StackFrame[]} */
         this.stack = [];
         this.interrupted = false;
@@ -33,7 +33,6 @@ class Runtime {
      */
     call(frame) {
         this.stack.push(frame);
-        this.interrupt();
     }
 
     /**
@@ -45,29 +44,8 @@ class Runtime {
         }
         this.clearInterrupt();
         if (this.stack.length === 0) {
-            this.list.markDone();
-        }
-    }
-
-    swap(i, j) {
-        this.list.swap(i, j);
-    }
-
-    /**
-     * @param {QuicksortFrame} frame
-     */
-    markFrame(frame) {
-        for (let i = frame.low; i <= frame.high; i++) {
-            this.list.mark(i);
-        }
-    }
-
-    /**
-     * @param {QuicksortFrame} frame
-     */
-    unmarkFrame(frame) {
-        for (let i = frame.low; i <= frame.high; i++) {
-            this.list.unmark(i);
+            this.scene.markDone();
+            this.scene.text.innerText = 'Die Zahlen wurden erfolgreich sortiert.';
         }
     }
 }
@@ -103,7 +81,7 @@ class QuicksortFrame extends StackFrame {
                     runtime.popFrame();
                     return;
                 }
-                runtime.markFrame(this);
+                this.markFrame(runtime);
                 runtime.call(new PartitionFrame(this.low, this.high));
                 return;
             }
@@ -114,7 +92,7 @@ class QuicksortFrame extends StackFrame {
             case 1: {
                 /** @type {number} */
                 this.partitionIndex = runtime.returnValue;
-                runtime.unmarkFrame(this);
+                this.unmarkFrame(runtime);
                 runtime.call(new QuicksortFrame(this.low, this.partitionIndex - 1));
                 return;
             }
@@ -132,6 +110,24 @@ class QuicksortFrame extends StackFrame {
                 runtime.popFrame();
                 return;
             }
+        }
+    }
+
+    /**
+     * @param {Runtime} runtime
+     */
+    markFrame(runtime) {
+        for (let i = this.low; i <= this.high; i++) {
+            runtime.scene.mark(i);
+        }
+    }
+
+    /**
+     * @param {Runtime} runtime
+     */
+    unmarkFrame(runtime) {
+        for (let i = this.low; i <= this.high; i++) {
+            runtime.scene.unmark(i);
         }
     }
 }
@@ -156,6 +152,12 @@ class PartitionFrame extends StackFrame {
              */
             case 0: {
                 this.pivot = runtime.arr[this.high];
+                runtime.interrupt(); // New pivot
+                runtime.scene.text.innerText = `Der Pivot befindet sich nun an dem Index ${this.high} mit dem Wert ${this.pivot}.
+
+Von den markierten Zahlen, werden alle Zahlen kleiner als der Pivot auf die linke Seite und alle Zahlen größer als der Pivot auf die rechte Seite geschoben.
+
+Der Pivot bewegt sich dazwischen.`;
                 this.i = this.low - 1;
                 this.j = this.low;
                 return;
@@ -166,9 +168,9 @@ class PartitionFrame extends StackFrame {
             case 1: {
                 if (this.j <= this.high - 1) {
                     if (runtime.arr[this.j] < this.pivot) {
-                        runtime.swap(++this.i, this.j);
+                        runtime.scene.swap(++this.i, this.j);
                         if (this.i !== this.j) {
-                            // runtime.interrupt();
+                            runtime.interrupt();
                         }
                     }
                     this.j++;
@@ -181,7 +183,8 @@ class PartitionFrame extends StackFrame {
              * - Return
              */
             case 2: {
-                runtime.swap(this.i + 1, this.high);
+                runtime.scene.swap(this.i + 1, this.high);
+                runtime.interrupt();
                 runtime.returnValue = this.i + 1;
                 runtime.popFrame();
                 return;

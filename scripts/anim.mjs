@@ -1,49 +1,38 @@
 import {Runtime} from './qs.mjs';
 
-export {AnimScene, AnimList, AnimBox, AnimText};
+export {AnimScene, AnimBox, AnimText};
 
 class AnimScene {
     /**
      * @param {SVGSVGElement} frame
+     * @param {HTMLElement} text
      * @param {number} width
      * @param {number} height
-     * @param {number[]} contents
+     * @param {number[]} arr
      */
-    constructor(frame, width, height, contents) {
-        this.contents = contents;
-        this.list = new AnimList(frame, width, height, height / 2, contents);
-        this.text = new AnimText(frame, width / 2, height * 0.66, '');
-        this.runtime = new Runtime(this.list);
-    }
-
-    remove() {
-        this.list.remove();
-    }
-}
-
-class AnimList {
-    /**
-     * @param {SVGSVGElement} frame
-     * @param {number} width
-     * @param {number} height
-     * @param {number} y
-     * @param {number[]} contents
-     */
-    constructor(frame, width, height, y, contents) {
-        let x = width / 2 - (contents.length * 30 - 5) / 2 + 15;
-        this.contents = contents;
-        /**
-         * @type {AnimBox[]}
-         */
+    constructor(frame, text, width, height, arr) {
+        let x = width / 2 - (arr.length * 30 - 5) / 2 + 15;
+        const y = height / 2;
+        this.text = text;
+        this.arr = arr;
+        /** @type {AnimText[]} */
+        this.indices = [];
+        /** @type {AnimBox[]} */
         this.boxes = [];
-        for (const element of contents) {
-            const box = new AnimBox(frame, x, y, element.toString());
-            this.boxes.push(box);
+        let i = 0;
+        for (const element of arr) {
+            this.indices.push(new AnimText(frame, x, y - 20, `[${i}]`)); // Index text
+            this.boxes.push(new AnimBox(frame, x, y, element.toString()));
             x += 30;
+            i += 1;
         }
+        this.runtime = new Runtime(this);
     }
 
     remove() {
+        for (const index of this.indices) {
+            index.remove();
+        }
         for (const box of this.boxes) {
             box.remove();
         }
@@ -82,9 +71,9 @@ class AnimList {
         b.move(ax);
         this.boxes[i] = b;
         this.boxes[j] = a;
-        const temp = this.contents[i];
-        this.contents[i] = this.contents[j];
-        this.contents[j] = temp;
+        const temp = this.arr[i];
+        this.arr[i] = this.arr[j];
+        this.arr[j] = temp;
     }
 }
 
@@ -103,7 +92,6 @@ class AnimBox {
         this.rect.setAttribute('height', '20');
         this.rect.setAttribute('x', (x - 10).toString());
         this.rect.setAttribute('y', (y - 10).toString());
-        this.rect.setAttribute('fill', 'aqua');
         this.rect.setAttribute('class', 'anim-box');
         this.text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         this.text.setAttribute('x', x.toString());
@@ -161,7 +149,7 @@ class AnimText {
         this.y = y;
         this.text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         this.text.setAttribute('x', x.toString());
-        this.text.setAttribute('y', x.toString());
+        this.text.setAttribute('y', y.toString());
         this.text.setAttribute('class', 'anim-text');
         this.text.appendChild(document.createTextNode(text));
         frame.appendChild(this.text);
