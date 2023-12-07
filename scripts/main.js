@@ -7,6 +7,18 @@ const width = frame.viewBox.baseVal.width;
 const height = frame.viewBox.baseVal.height;
 window.scene = new AnimScene(frame, infoText, width, height, generateArray());
 
+/**
+ * @param {HTMLElement} element
+ */
+function flash(element) {
+    const klass = 'ui-element-flash';
+    if (element.classList.contains(klass)) {
+        return;
+    }
+    element.classList.add(klass);
+    setTimeout(() => numberInput.classList.remove(klass), 750);
+}
+
 window.runtimeRestart = () => {
     const input = numberInput.value;
     let arr;
@@ -15,10 +27,16 @@ window.runtimeRestart = () => {
         /** @type {number[]} */
         const resultArr = [];
         for (const part of parts) {
-            resultArr.push(+part);
+            const num = Number.parseInt(part);
+            if (!Number.isSafeInteger(num)) {
+                flash(numberInput);
+                return;
+            }
+            resultArr.push(num);
         }
         if (resultArr.length > 10 || resultArr.length < 2) {
             infoText.innerText = 'Es müssen zwischen 2 und 10 Zahlen angegeben werden.';
+            flash(numberInput);
             return;
         }
         arr = resultArr;

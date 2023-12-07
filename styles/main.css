@@ -47,6 +47,23 @@ body {
     background-color: #202038;
 }
 
+@keyframes flash {
+    0% {
+        background-color: #202028;
+    }
+    20% {
+        background-color: #402020;
+    }
+    90%,
+    100% {
+        background-color: #202028;
+    }
+}
+
+.ui-element-flash {
+    animation: flash 750ms linear;
+}
+
 .dark-area {
     background-color: #202520;
     width: 80vw;
